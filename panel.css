@@ -1,0 +1,31 @@
+/* Panel styles are embedded in contentScript.js */
+/* This file can be used for additional panel customization */
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+#afi-analysis-panel {
+  animation: slideIn 0.3s ease-out;
+}
+
+#afi-minimize-badge {
+  animation: pulse 2s infinite;
+}

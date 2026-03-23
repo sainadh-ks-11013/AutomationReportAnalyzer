@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Automation Failure Intelligence v3.1 - Documentation</title>
+  <style>
+    body {
+      font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      color: #1a1a2e;
+      font-size: 24pt;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 10px;
+      margin-top: 30px;
+    }
+    h2 {
+      color: #0f3460;
+      font-size: 16pt;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+      margin-top: 25px;
+    }
+    h3 {
+      color: #16213e;
+      font-size: 13pt;
+      margin-top: 20px;
+    }
+    h4 {
+      color: #333;
+      font-size: 11pt;
+      margin-top: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 10pt;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #0f3460;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+    code {
+      background-color: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 10pt;
+    }
+    pre {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 9pt;
+      line-height: 1.4;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 9pt;
+    }
+    .badge-red { background-color: #ff4444; color: white; }
+    .badge-yellow { background-color: #ffbb33; color: #333; }
+    .badge-blue { background-color: #33b5e5; color: white; }
+    .badge-green { background-color: #28a745; color: white; }
+    .badge-high { background-color: #dc3545; color: white; }
+    .badge-medium { background-color: #ffc107; color: #333; }
+    ul, ol {
+      margin: 10px 0;
+      padding-left: 25px;
+    }
+    li {
+      margin: 5px 0;
+    }
+    .toc {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .toc a {
+      color: #0f3460;
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      background-color: #e7f3ff;
+      border-left: 4px solid #0f3460;
+      padding: 10px 15px;
+      margin: 15px 0;
+    }
+    .warning {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px 15px;
+      margin: 15px 0;
+    }
+    .flowchart {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Consolas', monospace;
+      font-size: 9pt;
+      white-space: pre;
+    }
+    @media print {
+      body { margin: 0; padding: 20px; }
+      h1 { page-break-before: always; }
+      h1:first-of-type { page-break-before: avoid; }
+      table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Automation Failure Intelligence v3.1</h1>
+<p><strong>Complete Feature Documentation</strong></p>
+<p><em>Last Updated: March 2026</em></p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#architecture">Architecture &amp; File Structure</a></li>
+    <li><a href="#features">Core Features</a>
+      <ul>
+        <li><a href="#pattern-detection">Failure Pattern Detection</a></li>
+        <li><a href="#test-data">Smart Test Data Scenario Detection</a></li>
+        <li><a href="#panel">Floating Analysis Panel</a></li>
+        <li><a href="#full-report">Full Report</a></li>
+        <li><a href="#justification">Justification System</a></li>
+        <li><a href="#deep-analysis">Deep Analysis</a></li>
+        <li><a href="#playwright">Playwright MCP Prompt Generator</a></li>
+      </ul>
+    </li>
+    <li><a href="#data-flow">Data Flow</a></li>
+    <li><a href="#api">Exposed API</a></li>
+    <li><a href="#technical">Technical Details</a></li>
+    <li><a href="#quickstart">Quick Start for Development</a></li>
+  </ol>
+</div>
+
+<h2 id="overview">1. Overview</h2>
+<p>A Chrome extension that analyzes automation test failure reports on Zoho Corp's internal tools (zohocorpin.com), automatically classifying failures into three categories:</p>
+
+<table>
+  <tr>
+    <th>Verdict</th>
+    <th>Indicator</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><span class="badge badge-red">Product Issue</span></td>
+    <td>🔴</td>
+    <td>Actual bugs in the product that need developer attention</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-yellow">Automation Issue</span></td>
+    <td>🟡</td>
+    <td>Test infrastructure problems, flaky tests, or expected validation behavior</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-blue">Needs Review</span></td>
+    <td>🔵</td>
+    <td>Requires manual investigation to determine root cause</td>
+  </tr>
+</table>
+
+<h2 id="architecture">2. Architecture &amp; File Structure</h2>
+
+<table>
+  <tr>
+    <th>File</th>
+    <th>Purpose</th>
+    <th>Size</th>
+  </tr>
+  <tr>
+    <td><code>manifest.json</code></td>
+    <td>Chrome MV3 extension configuration, permissions, host rules</td>
+    <td>~25 lines</td>
+  </tr>
+  <tr>
+    <td><code>background.js</code></td>
+    <td>Service worker for cross-origin API calls (bypasses CORS)</td>
+    <td>~100 lines</td>
+  </tr>
+  <tr>
+    <td><code>contentScript.js</code></td>
+    <td>Main analysis engine - injected on report pages</td>
+    <td>4180 lines</td>
+  </tr>
+  <tr>
+    <td><code>popup.html</code></td>
+    <td>Extension popup UI structure</td>
+    <td>~100 lines</td>
+  </tr>
+  <tr>
+    <td><code>popup.js</code></td>
+    <td>Extension popup with "Analyze Page" button</td>
+    <td>~70 lines</td>
+  </tr>
+  <tr>
+    <td><code>styles.css</code></td>
+    <td>Popup styling</td>
+    <td>~50 lines</td>
+  </tr>
+  <tr>
+    <td><code>panel.css</code></td>
+    <td>Floating panel animations</td>
+    <td>~30 lines</td>
+  </tr>
+</table>
+
+<h2 id="features">3. Core Features</h2>
+
+<h3 id="pattern-detection">3.1 Failure Pattern Detection</h3>
+<p>The extension maintains two comprehensive pattern databases for classification:</p>
+
+<h4>Automation Issue Patterns (<code>AUTOMATION_PATTERNS</code>)</h4>
+<table>
+  <tr>
+    <th>Category</th>
+    <th>Example Patterns</th>
+    <th>Suggestion</th>
+  </tr>
+  <tr>
+    <td><strong>Element Issues</strong></td>
+    <td><code>NoSuchElementException</code>, <code>StaleElementReferenceException</code>, <code>ElementNotInteractableException</code>, <code>element not found</code>, <code>Absence Of:</code></td>
+    <td>Check if element locator is correct or add explicit wait</td>
+  </tr>
+  <tr>
+    <td><strong>Timing Issues</strong></td>
+    <td><code>TimeoutException</code>, <code>not available after waiting</code>, <code>Expected condition failed</code></td>
+    <td>Increase wait time or use dynamic waits</td>
+  </tr>
+  <tr>
+    <td><strong>Overlay Issues</strong></td>
+    <td><code>another element obscures it</code>, <code>alertFreezeLayer</code>, <code>modal</code></td>
+    <td>Handle popup/overlay before interaction</td>
+  </tr>
+  <tr>
+    <td><strong>Setup Issues</strong></td>
+    <td><code>DUPLICATE_DATA</code>, <code>precondition</code>, <code>associated with other</code>, <code>slot is not found</code></td>
+    <td>Check test preconditions and data setup</td>
+  </tr>
+  <tr>
+    <td><strong>Input Validation</strong></td>
+    <td><code>cannot be empty</code>, <code>is required</code>, <code>special characters not allowed</code>, <code>please enter</code></td>
+    <td>Automation provided invalid test data - check input values</td>
+  </tr>
+  <tr>
+    <td><strong>Invalid Test Data</strong></td>
+    <td><code>Validating max characters</code>, <code>invalid domain</code>, <code>invalid key</code>, <code>already exists</code></td>
+    <td>Test uses intentionally invalid input - expected validation behavior</td>
+  </tr>
+</table>
+
+<h4>Product Issue Patterns (<code>PRODUCT_PATTERNS</code>)</h4>
+<table>
+  <tr>
+    <th>Category</th>
+    <th>Severity</th>
+    <th>Example Patterns</th>
+  </tr>
+  <tr>
+    <td><strong>Server Errors</strong></td>
+    <td><span class="badge badge-high">HIGH</span></td>
+    <td><code>500 Internal Server Error</code>, <code>502 Bad Gateway</code>, <code>503 Service Unavailable</code></td>
+  </tr>
+  <tr>
+    <td><strong>App Exceptions</strong></td>
+    <td><span class="badge badge-high">HIGH</span></td>
+    <td><code>NullPointerException</code>, <code>ArrayIndexOutOfBoundsException</code>, <code>ClassCastException</code></td>
+  </tr>
+  <tr>
+    <td><strong>API Errors</strong></td>
+    <td><span class="badge badge-medium">MEDIUM</span></td>
+    <td><code>API responded with error</code>, <code>status 40X</code>, <code>status 50X</code>, <code>Request failed</code></td>
+  </tr>
+  <tr>
+    <td><strong>Database Errors</strong></td>
+    <td><span class="badge badge-high">HIGH</span></td>
+    <td><code>Database error</code>, <code>SQL Exception</code>, <code>Connection refused</code></td>
+  </tr>
+  <tr>
+    <td><strong>Validation Issues</strong></td>
+    <td><span class="badge badge-medium">MEDIUM</span></td>
+    <td><code>expected validation error not displayed</code>, <code>Expected error msg not found</code></td>
+  </tr>
+  <tr>
+    <td><strong>Unexpected Behavior</strong></td>
+    <td><span class="badge badge-medium">MEDIUM</span></td>
+    <td><code>wrongly shown</code>, <code>not redirecting</code>, <code>updating unexpectedly</code></td>
+  </tr>
+</table>
+
+<h3 id="test-data">3.2 Smart Test Data Scenario Detection</h3>
+<p>The extension intelligently detects when tests are intentionally using invalid input for validation testing:</p>
+
+<pre>
+// Detection patterns include:
+/validating.*special characters/i
+/enter.*value.*as.*[!@#$%^&*]/i
+/check.*validation/i
+/max characters.*validation/i
+/negative.*test.*scenario/i
+/boundary.*test/i
+</pre>
+
+<div class="note">
+  <strong>Logic:</strong> When a test data validation scenario is detected AND a validation error occurs (like "cannot be empty" or HTTP 400), the failure is classified as <span class="badge badge-yellow">Automation Issue</span> because the validation is working correctly - this is expected behavior.
+</div>
+
+<h3 id="panel">3.3 Floating Analysis Panel</h3>
+<p>After clicking "Analyze Page", a floating panel appears in the top-right corner with:</p>
+
+<ul>
+  <li><strong>Header:</strong> "Failure Intelligence v3" with minimize/close buttons</li>
+  <li><strong>Summary:</strong> Overall verdict with color-coded background</li>
+  <li><strong>Counts:</strong> 🔴 X Product | 🟡 X Automation | 🔵 X Review</li>
+  <li><strong>Action Buttons:</strong> "📊 Full Report" and "🔄 Refresh"</li>
+  <li><strong>Results List:</strong> Each failure row card containing:
+    <ul>
+      <li>Test case name with verdict emoji</li>
+      <li>Category tag</li>
+      <li>Failure text excerpt</li>
+      <li>Confidence percentage</li>
+      <li>Suggestion (green highlighted)</li>
+      <li>Action buttons row</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Action Buttons per Row:</h4>
+<table>
+  <tr>
+    <th>Button</th>
+    <th>Function</th>
+  </tr>
+  <tr>
+    <td>📋 Justification</td>
+    <td>Shows why this classification was made</td>
+  </tr>
+  <tr>
+    <td>🎭 Replay Prompt</td>
+    <td>Generates Playwright MCP prompt</td>
+  </tr>
+  <tr>
+    <td>🔬 Deep Analyze</td>
+    <td>Performs historical analysis</td>
+  </tr>
+  <tr>
+    <td>📜 History</td>
+    <td>Opens Case History menu</td>
+  </tr>
+  <tr>
+    <td>🖼️ DOM</td>
+    <td>Opens reconstructed DOM snapshot</td>
+  </tr>
+  <tr>
+    <td>🎬 Video</td>
+    <td>Opens failure video for verification</td>
+  </tr>
+</table>
+
+<h3 id="full-report">3.4 Full Report (New Tab)</h3>
+<p>Opens a comprehensive HTML report in a new browser tab with:</p>
+
+<ul>
+  <li><strong>Header:</strong> Report title, generation timestamp, source URL</li>
+  <li><strong>Statistics Dashboard:</strong> Large stat boxes showing counts</li>
+  <li><strong>Filter Buttons:</strong> All | 🔴 Product | 🟡 Automation | 🔵 Review</li>
+  <li><strong>Data Table:</strong> Sortable table with columns:
+    <ul>
+      <li># (row number)</li>
+      <li>Test Case (with "View Case Description" button)</li>
+      <li>Verdict (color badge)</li>
+      <li>Category (tag)</li>
+      <li>Failure Details (with suggestion)</li>
+      <li>Confidence %</li>
+      <li>Justification (with "View Full" button)</li>
+      <li>Actions (DOM/Video/Playwright icons)</li>
+    </ul>
+  </li>
+  <li><strong>Export Buttons:</strong>
+    <ul>
+      <li>📥 Export CSV - Downloads all data as CSV file</li>
+      <li>🖨️ Print Report - Browser print dialog</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="justification">3.5 Justification System</h3>
+<p>Every classification includes detailed justification data:</p>
+
+<pre>
+{
+  reason: "Main reason for classification",
+  evidence: [
+    "Pattern matched: 'NoSuchElementException'",
+    "Category: Element Locator Issue",
+    "Suggestion: Check if element locator is correct"
+  ],
+  matchedText: "The actual text snippet that triggered matching",
+  whyThisVerdict: "Human-readable explanation of the reasoning"
+}
+</pre>
+
+<p>The justification modal displays:</p>
+<ul>
+  <li>Test case name and number</li>
+  <li>Verdict badge with confidence</li>
+  <li>Category</li>
+  <li>Main Reason (highlighted box)</li>
+  <li>Evidence list</li>
+  <li>Why This Classification (detailed explanation)</li>
+  <li>Matched Pattern (code block)</li>
+  <li>Failure Text excerpt</li>
+  <li>Links to DOM/Video</li>
+</ul>
+
+<h3 id="deep-analysis">3.6 Deep Analysis (Case History)</h3>
+<p>The most powerful feature - performs multi-source historical analysis:</p>
+
+<h4>Step 1: In This Report Analysis</h4>
+<ul>
+  <li>Checks if test ran multiple times in same report</li>
+  <li>Detects "First run passed, second failed" pattern (classic flaky indicator)</li>
+  <li>Counts pass/fail within report runs</li>
+</ul>
+
+<h4>Step 2: Same Feature Analysis</h4>
+<ul>
+  <li>Scans all rows sharing the same feature name</li>
+  <li>Detects <strong>Momentary Issues</strong> - when same feature has both passing and failing tests</li>
+  <li>If other tests in same feature pass → likely automation flakiness</li>
+</ul>
+
+<h4>Step 3: Historical Analysis (Past Final Results)</h4>
+<ul>
+  <li>Extracts test case ID from row (multiple methods: ID attribute, data attributes, ng-click, Angular scope)</li>
+  <li>Calls Aalam Legacy API via background script (bypasses CORS)</li>
+  <li>Analyzes:
+    <ul>
+      <li>Total historical executions</li>
+      <li>Pass/Fail counts and failure rate %</li>
+      <li>Consecutive recent failures</li>
+      <li>Pass rate trends</li>
+      <li>Previous classifications (Product vs Automation)</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Step 4: Signal Aggregation</h4>
+<table>
+  <tr>
+    <th>Signal Type</th>
+    <th>Weight</th>
+    <th>Example Triggers</th>
+  </tr>
+  <tr>
+    <td>Initial panel classification</td>
+    <td>+3</td>
+    <td>Pattern matched in main analysis</td>
+  </tr>
+  <tr>
+    <td>Momentary issue detected</td>
+    <td>+3 (automation)</td>
+    <td>Same feature has passing tests</td>
+  </tr>
+  <tr>
+    <td>Mixed pass/fail in report</td>
+    <td>+2 (automation)</td>
+    <td>Flaky test pattern</td>
+  </tr>
+  <tr>
+    <td>Consistent failures (&gt;3 consecutive)</td>
+    <td>+2 (product)</td>
+    <td>Recurring issue</td>
+  </tr>
+  <tr>
+    <td>High failure rate (&gt;70%)</td>
+    <td>+2 (product)</td>
+    <td>Systemic problem</td>
+  </tr>
+  <tr>
+    <td>Previously classified as X</td>
+    <td>+3</td>
+    <td>Historical classification</td>
+  </tr>
+</table>
+
+<h4>Step 5: Opens Detailed Report Page</h4>
+<p>A new tab opens with comprehensive analysis including:</p>
+<ul>
+  <li>Color-coded verdict box (Automation/Product/Unknown)</li>
+  <li>Test case information card</li>
+  <li>Source links section</li>
+  <li>Stats grids for each analysis type</li>
+  <li>Visual history pattern (P/F colored squares)</li>
+  <li>All signals listed with color coding</li>
+</ul>
+
+<h3 id="playwright">3.7 Playwright MCP Prompt Generator</h3>
+<p>Generates executable prompts for VS Code Copilot with Playwright MCP integration:</p>
+
+<h4>Input Fields:</h4>
+<ul>
+  <li>Application URL</li>
+  <li>Username/Email</li>
+  <li>Password</li>
+  <li>Organization/Portal (optional)</li>
+</ul>
+
+<h4>Generated Prompt Structure:</h4>
+<pre>
+EXECUTE THIS TEST CASE USING PLAYWRIGHT MCP:
+
+**Test:** [Test Case Name]
+**Current Status:** [Verdict Badge]
+
+---
+
+## STEP 1: LOGIN TO APPLICATION
+- mcp_playwright_browser_navigate
+- mcp_playwright_browser_snapshot
+- mcp_playwright_browser_fill_form
+- mcp_playwright_browser_click
+- mcp_playwright_browser_wait_for
+
+## STEP 2: UNDERSTAND THE TEST STEPS
+[Reference to ideal video if available]
+
+## STEP 3: EXECUTE TEST ACTIONS
+[Dynamic actions based on test case name parsing]
+
+## FAILURE CONTEXT
+[Original failure text]
+
+## STEP 4: VERIFY AND REPORT
+[Instructions for result comparison]
+</pre>
+
+<h2 id="data-flow">4. Data Flow</h2>
+
+<div class="flowchart">
+Page Load
+    ↓
+Content Script Injected (waits)
+    ↓
+User clicks "Analyze Page" from extension popup
+    ↓
+extractAllFailureRows() → DOM parsing
+    ↓
+For each row: analyzeFailure()
+    ↓
+Pattern matching + test data scenario check
+    ↓
+createPanel() → Show floating UI
+    ↓
+[User clicks Deep Analyze]
+    ↓
+Find Case History menu → Extract links
+    ↓
+Background.js → Fetch Aalam API data (CORS bypass)
+    ↓
+generateInsight() → Aggregate all signals
+    ↓
+openDeepAnalysisReport() → New tab with full analysis
+</div>
+
+<h2 id="api">5. Exposed Global API</h2>
+
+<pre>
+window.AFI = {
+  analyze: init,              // Trigger analysis
+  getResults: () => {...},    // Get current results array
+  openFullReport: () => {},   // Open full report in new tab
+  refresh: init,              // Re-run analysis
+  deepAnalyze: (row, idx)     // Deep analyze specific row
+};
+</pre>
+
+<h4>Usage Examples:</h4>
+<pre>
+// Trigger analysis programmatically
+window.AFI.analyze();
+
+// Get all analyzed results
+const results = window.AFI.getResults();
+console.log(results.length + " failures found");
+
+// Open full report
+window.AFI.openFullReport();
+
+// Deep analyze specific row
+window.AFI.deepAnalyze(results[0], 0);
+</pre>
+
+<h2 id="technical">6. Technical Details</h2>
+
+<table>
+  <tr>
+    <th>Aspect</th>
+    <th>Implementation</th>
+  </tr>
+  <tr>
+    <td>Page Detection</td>
+    <td>URL includes <code>AutomationReports</code>, <code>reportsnew</code>, or <code>Qap</code></td>
+  </tr>
+  <tr>
+    <td>Row Extraction</td>
+    <td><code>[id^="reportrows_"]</code> CSS selector</td>
+  </tr>
+  <tr>
+    <td>Video Links</td>
+    <td>Parses <code>a[href*="imageplayer"]</code> and text-based links</td>
+  </tr>
+  <tr>
+    <td>AngularJS Support</td>
+    <td>Attempts <code>angular.element().scope()</code> for test case IDs</td>
+  </tr>
+  <tr>
+    <td>CORS Handling</td>
+    <td>Background service worker with <code>silentFetch()</code></td>
+  </tr>
+  <tr>
+    <td>Message Passing</td>
+    <td><code>chrome.runtime.sendMessage</code> for popup ↔ content script</td>
+  </tr>
+  <tr>
+    <td>Manifest Version</td>
+    <td>Chrome Extension Manifest V3</td>
+  </tr>
+</table>
+
+<h4>API Endpoints Attempted (Background Script):</h4>
+<pre>
+/Qap/api/history/{testCaseId}?belongsTo=finalStatus
+/Qap/api/testcase/{testCaseId}/history
+/Qap/rest/history/testcaseid/{testCaseId}
+/Qap/rest/testcase/history?id={testCaseId}
+/Qap/api/executions?testCaseId={testCaseId}
+/Qap/api/v1/testcases/{testCaseId}/executions
+</pre>
+
+<h4>CSS Theme:</h4>
+<ul>
+  <li>Dark background: <code>#1a1a2e</code>, <code>#16213e</code></li>
+  <li>Primary accent: <code>#0f3460</code></li>
+  <li>Red (product): <code>#ff4444</code></li>
+  <li>Yellow (automation): <code>#ffbb33</code></li>
+  <li>Blue (review): <code>#33b5e5</code></li>
+  <li>Green (success): <code>#28a745</code></li>
+</ul>
+
+<h2 id="quickstart">7. Quick Start for Development</h2>
+
+<ol>
+  <li><strong>Load Extension:</strong>
+    <ul>
+      <li>Open Chrome → <code>chrome://extensions</code></li>
+      <li>Enable "Developer mode"</li>
+      <li>Click "Load unpacked"</li>
+      <li>Select the <code>automation-log-analyzer</code> folder</li>
+    </ul>
+  </li>
+  <li><strong>Navigate to Report Page:</strong>
+    <ul>
+      <li>Open any <code>zohocorpin.com/AutomationReports</code> page</li>
+      <li>Or any URL containing <code>reportsnew</code> or <code>Qap</code></li>
+    </ul>
+  </li>
+  <li><strong>Run Analysis:</strong>
+    <ul>
+      <li>Click the extension icon in Chrome toolbar</li>
+      <li>Click "Analyze Page" button</li>
+      <li>Wait 2-3 seconds for analysis to complete</li>
+    </ul>
+  </li>
+  <li><strong>View Results:</strong>
+    <ul>
+      <li>Floating panel appears with all failures classified</li>
+      <li>Click any row to scroll/highlight original in page</li>
+      <li>Use "Full Report" for exportable tabular view</li>
+      <li>Use "Deep Analyze" for historical comparison</li>
+    </ul>
+  </li>
+</ol>
+
+<div class="warning">
+  <strong>Note:</strong> Deep Analysis requires the row to be expanded first (click on it) to reveal the Case History menu.
+</div>
+
+<hr>
+<p style="text-align: center; color: #888; font-size: 10pt;">
+  Automation Failure Intelligence v3.1 | Documentation<br>
+  Generated for internal use
+</p>
+
+</body>
+</html>

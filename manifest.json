@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Automation Failure Intelligence",
+  "version": "4.0",
+  "description": "AI-Powered Analysis with FREE Claude.ai integration - One click Open in Claude for professional analysis",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "*://*.zohocorpin.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.openai.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.groq.com/*",
+    "https://openrouter.ai/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Automation Failure Intelligence"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.zohocorpin.com/*"
+      ],
+      "js": ["contentScript.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Automation Failure Intelligence</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="header">
+  <div class="logo"></div>
+  <div class="title">
+    <h1>Failure Intelligence</h1>
+    <span class="version">v3.0</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="description">
+    Deep analysis of automation test failures with <strong>Case History</strong> comparison to distinguish between <strong>automation issues</strong> and <strong>product bugs</strong>.
+  </div>
+
+  <div class="status-card" id="statusCard">
+    <div class="status-icon" id="statusIcon"></div>
+    <div class="status-text" id="statusText">Ready to analyze</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <span class="dot red"></span>
+      <span>Product Issue</span>
+    </div>
+    <div class="legend-item">
+      <span class="dot yellow"></span>
+      <span>Automation Issue</span>
+    </div>
+    <div class="legend-item">
+      <span class="dot blue"></span>
+      <span>Needs Review</span>
+    </div>
+  </div>
+
+  <div class="patterns">
+    <h3>Features</h3>
+    <details open>
+      <summary>Full Report</summary>
+      <ul>
+        <li>View ALL failure rows in new tab</li>
+        <li>Filter by verdict type</li>
+        <li>Export to CSV</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Deep Analysis</summary>
+      <ul>
+        <li>Check "In This Report" history</li>
+        <li>Compare "Past Final Results"</li>
+        <li>Identify recurring failures</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Product Issues</summary>
+      <ul>
+        <li>500/502/503 Server Errors</li>
+        <li>NullPointerException</li>
+        <li>API/Database Errors</li>
+        <li>"Sorry, something went wrong"</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Automation Issues</summary>
+      <ul>
+        <li>NoSuchElementException</li>
+        <li>TimeoutException</li>
+        <li>Element blocked by overlay</li>
+        <li>Test setup/data issues</li>
+        <li><strong>"cannot be empty"</strong> validation alerts</li>
+        <li>Required field errors</li>
+      </ul>
+    </details>
+  </div>
+</div>
+
+<div class="footer">
+  <button id="analyzeBtn" class="btn-primary">Analyze Page</button>
+</div>
+
+<script src="popup.js"></script>
+
+</body>
+</html>
