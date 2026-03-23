@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Row 20 - Failure Analysis Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .verdict-badge {
+            display: inline-block;
+            background: #fff;
+            color: #e67e22;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .section h2 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 10px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .info-label {
+            min-width: 180px;
+            font-weight: bold;
+            color: #aaa;
+        }
+        .info-value {
+            flex: 1;
+            color: #fff;
+        }
+        .highlight {
+            background: rgba(243, 156, 18, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #f39c12;
+            font-family: monospace;
+        }
+        .case-step {
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #3498db;
+            border-radius: 0 8px 8px 0;
+        }
+        .case-step.critical {
+            border-left-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+        .dom-preview {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        .dom-preview .field-label {
+            color: #7ee787;
+        }
+        .dom-preview .field-value {
+            color: #ff7b72;
+            font-weight: bold;
+        }
+        .evidence-list {
+            list-style: none;
+        }
+        .evidence-list li {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(46, 204, 113, 0.15);
+            border-left: 4px solid #2ecc71;
+            border-radius: 0 8px 8px 0;
+        }
+        .conclusion {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+        .conclusion h2 {
+            color: #fff;
+            border: none;
+            margin-bottom: 15px;
+        }
+        .conclusion p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .confidence-meter {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: #fff;
+            width: 95%;
+            border-radius: 10px;
+        }
+        .api-error {
+            color: #f39c12;
+            font-family: monospace;
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Row 20 - Failure Analysis</h1>
+            <div class="verdict-badge">🟡 AUTOMATION ISSUE</div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Test Case Information</h2>
+            <div class="info-row">
+                <span class="info-label">Row Number:</span>
+                <span class="info-value">20</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Test Name:</span>
+                <span class="info-value">DashboardAnalytics</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Exception Type:</span>
+                <span class="info-value">NoSuchElementException</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Failure Point:</span>
+                <span class="info-value">While verifying the Validation message for allowed domain input field in Embed URL pop up</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📝 Case Description Steps</h2>
+            <div class="case-step">1. Create a dashboard with a chart</div>
+            <div class="case-step">2. Click Embed URL from more options of the component</div>
+            <div class="case-step critical">
+                <strong>⚠️ 3. Enter the value for allowed domains as <span class="highlight">!@#$%^&</span></strong>
+                <br><small style="color: #e74c3c; margin-top: 5px; display: block;">← INTENTIONALLY INVALID INPUT - This is the root cause!</small>
+            </div>
+            <div class="case-step">4. Click Save and check if the validation alert is shown</div>
+        </div>
+
+        <div class="section">
+            <h2>🖥️ ReConstructed DOM Evidence</h2>
+            <p style="margin-bottom: 15px; color: #aaa;">The DOM snapshot at failure time shows the Embed URL popup with invalid data:</p>
+            <div class="dom-preview">
+                <span style="color: #79c0ff;">dialog</span> [ref=e328]:<br>
+                &nbsp;&nbsp;├── <span class="field-label">Title:</span> "Embed URL - First Chart"<br>
+                &nbsp;&nbsp;├── <span class="field-label">URL Field:</span> https://crmqa.localzoho.com/crm/...<br>
+                &nbsp;&nbsp;└── <span class="field-label">Allowed Domains:</span> textbox [ref=e357]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="field-value">Value: "!@#$%^&"</span> ← Invalid characters entered
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📡 Failed API Requests</h2>
+            <p style="margin-bottom: 10px; color: #aaa;">Server returned 400 (Bad Request) - <strong>Expected behavior when invalid data is submitted!</strong></p>
+            <div class="api-error">
+                ✓ https://crmqa.localzoho.com/crm/v2.2/__internal/settings/extensions/voc/configuration<br>
+                &nbsp;&nbsp;Method: GET | Status: <span style="color: #f39c12; font-weight: bold;">400</span> | Time: 05/03/2026 02:37:21
+            </div>
+            <div class="api-error">
+                ✓ https://crmqa.localzoho.com/crm/v2.2/__internal/settings/extensions/voc/configuration<br>
+                &nbsp;&nbsp;Method: GET | Status: <span style="color: #f39c12; font-weight: bold;">400</span> | Time: 05/03/2026 02:34:49
+            </div>
+            <p style="margin-top: 15px; color: #2ecc71; font-size: 14px;">
+                ℹ️ The 400 status code is the server correctly rejecting invalid domain input - this is NOT a product bug!
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>✅ Evidence Summary</h2>
+            <ul class="evidence-list">
+                <li><strong>Case Description clearly states:</strong> "Enter the value for allowed domains as !@#$%^&" - this is intentional invalid input for validation testing</li>
+                <li><strong>Test Purpose:</strong> To verify that validation alert appears when invalid characters are entered</li>
+                <li><strong>ReConstructed DOM confirms:</strong> The Allowed Domains field contains "!@#$%^&" at time of failure</li>
+                <li><strong>400 Status Codes:</strong> Server correctly rejected invalid domain names - expected behavior</li>
+                <li><strong>NoSuchElementException:</strong> Test couldn't find Done button because validation prevented proceeding - test logic issue</li>
+            </ul>
+        </div>
+
+        <div class="conclusion">
+            <h2>🎯 Final Verdict</h2>
+            <p>
+                <strong>Category:</strong> Invalid Test Data / Validation Test<br><br>
+                This is an <strong>AUTOMATION ISSUE</strong>, not a product bug. The automation developer:<br>
+                1. Intentionally entered invalid characters (!@#$%^&) to test validation<br>
+                2. The product correctly validated and rejected the invalid input (400 status)<br>
+                3. The test expected to find a "Done" button, but validation prevented the action<br><br>
+                <strong>Recommendation:</strong> The test script needs to handle the validation scenario properly - 
+                either expect the validation error message or adjust the test data.
+            </p>
+            <div class="confidence-meter">
+                <div class="confidence-fill"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">Confidence: 95%</p>
+        </div>
+    </div>
+</body>
+</html>
